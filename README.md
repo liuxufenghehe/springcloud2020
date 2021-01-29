@@ -1,13 +1,14 @@
 # springcloud2020
 springcloud各组件的理论实践
 
-
-CAP原理：
+关于eureka,zookeeper,consul注册中心的CAP原理：
 C:强一致性(Consistency)
 A:高可用(Availability)
 P:分区容错性(Partition tolerance)
+Eureka(AP),zookeeper/consul(CP)
 
 alibaba组件docker部署流程：
+（本人为虚拟机）
 docker容器默认启动使用bridge桥接网络（默认网段:172.17.0.0），可自行创建network指定ip
 需要验证指定ip启动容器（以nginx为例）
 1、验证 docker -p 80:80 宿主机可访问到容器服务
@@ -19,10 +20,10 @@ docker network create --driver bridge --subnet=172.15.1.0/16  cloud-net
 docker run -itd --name cloud-nginx --net cloud-net --ip 172.15.1.3 -p 8080:80 nginx:1.10
 （3）windows cmd 添加路由：
 route add 172.15.1.0 mask 255.255.255.0 192.168.1.102
-（4）浏览器访问：http://hadoop102:8080,http://http://172.15.1.3/
+（4）浏览器访问：1）宿主机：http://hadoop102:8080 ；2）http://http://172.15.1.3/ ；
 
 docker nacos集群创建：
-节点（1）
+集群节点（1）
 docker run -d --name cloud-nacos-01 --net cloud-net --ip 172.15.1.4 --hostname cloud-nacos-01 --restart always \
 -e MYSQL_SERVICE_HOST=172.15.1.2 \
 -e MYSQL_SERVICE_PORT=3306 \
@@ -43,4 +44,6 @@ docker run -d --name cloud-nacos-01 --net cloud-net --ip 172.15.1.4 --hostname c
 -e JVM_MMS=80m \
 -p 3333:3333 nacos/nacos-server:1.2.1
 
-（2）、（3）同上，修改局部参数即可！
+集群节点（2）、（3）同上，修改局部参数即可！
+访问：http://172.15.1.3/nacos/index.html
+用户名/密码：nacos/nacos,登录即可查看到所有节点信息
